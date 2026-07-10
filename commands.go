@@ -1,11 +1,14 @@
 package main
 
 import (
-	"github.com/dhalvyr/blog_gator/internal/config"
 	"fmt"
+
+	"github.com/dhalvyr/blog_gator/internal/config"
+	"github.com/dhalvyr/blog_gator/internal/database"
 )
 
 type state struct {
+	db *database.Queries
 	cfg *config.Config
 }
 

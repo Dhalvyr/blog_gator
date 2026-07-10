@@ -1,9 +1,13 @@
 package main
 
 import (
-	"github.com/dhalvyr/blog_gator/internal/config"
+	"database/sql"
 	"fmt"
 	"os"
+
+	"github.com/dhalvyr/blog_gator/internal/config"
+	"github.com/dhalvyr/blog_gator/internal/database"
+	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -12,12 +16,20 @@ func main() {
 		fmt.Println(err)
 		return
 	}
+	db, err := sql.Open("postgres", cfg.DBURL)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	dbQueries := database.New(db)
 	
-	savedState := state{cfg: &cfg}
+	savedState := state{db: dbQueries, cfg: &cfg}
 
 	savedCommands := commands{commandList: map[string]func(*state, command) error{}}
 
 	savedCommands.register("login", handlerLogin)
+	savedCommands.register("register", handlerRegister)
 
 	args := os.Args
 	if len(args) < 2 {
