@@ -32,6 +32,7 @@ func main() {
 	savedCommands.register("register", handlerRegister)
 	savedCommands.register("reset", handlerReset)
 	savedCommands.register("users", handlerUsers)
+	savedCommands.register("agg", handlerAggregator)
 
 	args := os.Args
 	if len(args) < 2 {
