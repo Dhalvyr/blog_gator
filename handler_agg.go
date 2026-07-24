@@ -1,18 +1,26 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"os"
+	"time"
 )
 
 func handlerAggregator(s *state, cmd command) error {
-	feed, err := fetchFeed(context.Background(), "https://www.wagslane.dev/index.xml")
-	if err != nil {
-		fmt.Println(err)
+	if len(cmd.args) < 1 {
+		fmt.Println("time between requests required")
 		os.Exit(1)
 	}
 
-	fmt.Printf("%+v\n", feed)
-	return nil
+	time_between_reqs, err := time.ParseDuration(cmd.args[0])
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Collecting feeds every %v\n", time_between_reqs)
+
+	ticker := time.NewTicker(time_between_reqs)
+	for ; ; <-ticker.C {
+		scrapeFeeds(s)
+	}
 }
